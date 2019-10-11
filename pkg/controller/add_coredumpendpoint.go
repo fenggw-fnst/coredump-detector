@@ -17,7 +17,7 @@ limitations under the License.
 package controller
 
 import (
-	"github.com/WanLinghao/coredump-detector/pkg/controller/coredumpendpoint"
+	"github.com/fenggw-fnst/coredump-detector/pkg/controller/coredumpendpoint"
 )
 
 func init() {

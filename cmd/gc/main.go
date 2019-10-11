@@ -20,9 +20,9 @@ import (
 	//	"time"
 	"github.com/spf13/cobra"
 
-	backendopts "github.com/WanLinghao/coredump-detector/pkg/backend/options"
-	"github.com/WanLinghao/coredump-detector/pkg/gc"
-	gcopts "github.com/WanLinghao/coredump-detector/pkg/gc/options"
+	backendopts "github.com/fenggw-fnst/coredump-detector/pkg/backend/options"
+	"github.com/fenggw-fnst/coredump-detector/pkg/gc"
+	gcopts "github.com/fenggw-fnst/coredump-detector/pkg/gc/options"
 
 	genericapiserver "k8s.io/apiserver/pkg/server"
 )

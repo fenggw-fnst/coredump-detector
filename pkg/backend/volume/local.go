@@ -25,7 +25,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/WanLinghao/coredump-detector/pkg/backend/types"
+	"github.com/fenggw-fnst/coredump-detector/pkg/backend/types"
 	"k8s.io/klog"
 )
 

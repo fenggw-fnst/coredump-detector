@@ -24,9 +24,9 @@ import (
 	"k8s.io/client-go/rest"
 	"sigs.k8s.io/apiserver-builder-alpha/pkg/test"
 
-	"github.com/WanLinghao/coredump-detector/pkg/apis"
-	"github.com/WanLinghao/coredump-detector/pkg/client/clientset_generated/clientset"
-	"github.com/WanLinghao/coredump-detector/pkg/openapi"
+	"github.com/fenggw-fnst/coredump-detector/pkg/apis"
+	"github.com/fenggw-fnst/coredump-detector/pkg/client/clientset_generated/clientset"
+	"github.com/fenggw-fnst/coredump-detector/pkg/openapi"
 )
 
 var testenv *test.TestEnvironment

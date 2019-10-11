@@ -21,7 +21,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/WanLinghao/coredump-detector/pkg/apis"
+	"github.com/fenggw-fnst/coredump-detector/pkg/apis"
 	"github.com/onsi/gomega"
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"

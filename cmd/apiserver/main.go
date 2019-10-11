@@ -24,9 +24,9 @@ import (
 	_ "k8s.io/client-go/plugin/pkg/client/auth" // Enable cloud provider auth
 	"sigs.k8s.io/apiserver-builder-alpha/pkg/cmd/server"
 
-	"github.com/WanLinghao/coredump-detector/pkg/apis"
-	backend "github.com/WanLinghao/coredump-detector/pkg/backend/options"
-	"github.com/WanLinghao/coredump-detector/pkg/openapi"
+	"github.com/fenggw-fnst/coredump-detector/pkg/apis"
+	backend "github.com/fenggw-fnst/coredump-detector/pkg/backend/options"
+	"github.com/fenggw-fnst/coredump-detector/pkg/openapi"
 	"github.com/spf13/cobra"
 )
 

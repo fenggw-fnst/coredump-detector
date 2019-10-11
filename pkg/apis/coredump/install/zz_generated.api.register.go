@@ -19,8 +19,8 @@ limitations under the License.
 package install
 
 import (
-	"github.com/WanLinghao/coredump-detector/pkg/apis/coredump"
-	"github.com/WanLinghao/coredump-detector/pkg/apis/coredump/v1alpha1"
+	"github.com/fenggw-fnst/coredump-detector/pkg/apis/coredump"
+	"github.com/fenggw-fnst/coredump-detector/pkg/apis/coredump/v1alpha1"
 	"k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	"sigs.k8s.io/apiserver-builder-alpha/pkg/builders"

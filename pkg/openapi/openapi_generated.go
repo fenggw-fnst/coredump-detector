@@ -32,13 +32,13 @@ import (
 
 func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenAPIDefinition {
 	return map[string]common.OpenAPIDefinition{
-		"github.com/WanLinghao/coredump-detector/pkg/apis/coredump/v1alpha1.CoredumpEndpoint":         schema_pkg_apis_coredump_v1alpha1_CoredumpEndpoint(ref),
-		"github.com/WanLinghao/coredump-detector/pkg/apis/coredump/v1alpha1.CoredumpEndpointDump":     schema_pkg_apis_coredump_v1alpha1_CoredumpEndpointDump(ref),
-		"github.com/WanLinghao/coredump-detector/pkg/apis/coredump/v1alpha1.CoredumpEndpointDumpList": schema_pkg_apis_coredump_v1alpha1_CoredumpEndpointDumpList(ref),
-		"github.com/WanLinghao/coredump-detector/pkg/apis/coredump/v1alpha1.CoredumpEndpointList":     schema_pkg_apis_coredump_v1alpha1_CoredumpEndpointList(ref),
-		"github.com/WanLinghao/coredump-detector/pkg/apis/coredump/v1alpha1.CoredumpEndpointSpec":     schema_pkg_apis_coredump_v1alpha1_CoredumpEndpointSpec(ref),
-		"github.com/WanLinghao/coredump-detector/pkg/apis/coredump/v1alpha1.CoredumpEndpointStatus":   schema_pkg_apis_coredump_v1alpha1_CoredumpEndpointStatus(ref),
-		"github.com/WanLinghao/coredump-detector/pkg/apis/coredump/v1alpha1.CoredumpGetOptions":       schema_pkg_apis_coredump_v1alpha1_CoredumpGetOptions(ref),
+		"github.com/fenggw-fnst/coredump-detector/pkg/apis/coredump/v1alpha1.CoredumpEndpoint":         schema_pkg_apis_coredump_v1alpha1_CoredumpEndpoint(ref),
+		"github.com/fenggw-fnst/coredump-detector/pkg/apis/coredump/v1alpha1.CoredumpEndpointDump":     schema_pkg_apis_coredump_v1alpha1_CoredumpEndpointDump(ref),
+		"github.com/fenggw-fnst/coredump-detector/pkg/apis/coredump/v1alpha1.CoredumpEndpointDumpList": schema_pkg_apis_coredump_v1alpha1_CoredumpEndpointDumpList(ref),
+		"github.com/fenggw-fnst/coredump-detector/pkg/apis/coredump/v1alpha1.CoredumpEndpointList":     schema_pkg_apis_coredump_v1alpha1_CoredumpEndpointList(ref),
+		"github.com/fenggw-fnst/coredump-detector/pkg/apis/coredump/v1alpha1.CoredumpEndpointSpec":     schema_pkg_apis_coredump_v1alpha1_CoredumpEndpointSpec(ref),
+		"github.com/fenggw-fnst/coredump-detector/pkg/apis/coredump/v1alpha1.CoredumpEndpointStatus":   schema_pkg_apis_coredump_v1alpha1_CoredumpEndpointStatus(ref),
+		"github.com/fenggw-fnst/coredump-detector/pkg/apis/coredump/v1alpha1.CoredumpGetOptions":       schema_pkg_apis_coredump_v1alpha1_CoredumpGetOptions(ref),
 		"k8s.io/api/admissionregistration/v1beta1.MutatingWebhook":                                    schema_k8sio_api_admissionregistration_v1beta1_MutatingWebhook(ref),
 		"k8s.io/api/admissionregistration/v1beta1.MutatingWebhookConfiguration":                       schema_k8sio_api_admissionregistration_v1beta1_MutatingWebhookConfiguration(ref),
 		"k8s.io/api/admissionregistration/v1beta1.MutatingWebhookConfigurationList":                   schema_k8sio_api_admissionregistration_v1beta1_MutatingWebhookConfigurationList(ref),
@@ -724,19 +724,19 @@ func schema_pkg_apis_coredump_v1alpha1_CoredumpEndpoint(ref common.ReferenceCall
 					},
 					"spec": {
 						SchemaProps: spec.SchemaProps{
-							Ref: ref("github.com/WanLinghao/coredump-detector/pkg/apis/coredump/v1alpha1.CoredumpEndpointSpec"),
+							Ref: ref("github.com/fenggw-fnst/coredump-detector/pkg/apis/coredump/v1alpha1.CoredumpEndpointSpec"),
 						},
 					},
 					"status": {
 						SchemaProps: spec.SchemaProps{
-							Ref: ref("github.com/WanLinghao/coredump-detector/pkg/apis/coredump/v1alpha1.CoredumpEndpointStatus"),
+							Ref: ref("github.com/fenggw-fnst/coredump-detector/pkg/apis/coredump/v1alpha1.CoredumpEndpointStatus"),
 						},
 					},
 				},
 			},
 		},
 		Dependencies: []string{
-			"github.com/WanLinghao/coredump-detector/pkg/apis/coredump/v1alpha1.CoredumpEndpointSpec", "github.com/WanLinghao/coredump-detector/pkg/apis/coredump/v1alpha1.CoredumpEndpointStatus", "k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"},
+			"github.com/fenggw-fnst/coredump-detector/pkg/apis/coredump/v1alpha1.CoredumpEndpointSpec", "github.com/fenggw-fnst/coredump-detector/pkg/apis/coredump/v1alpha1.CoredumpEndpointStatus", "k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta"},
 	}
 }
 
@@ -804,7 +804,7 @@ func schema_pkg_apis_coredump_v1alpha1_CoredumpEndpointDumpList(ref common.Refer
 							Items: &spec.SchemaOrArray{
 								Schema: &spec.Schema{
 									SchemaProps: spec.SchemaProps{
-										Ref: ref("github.com/WanLinghao/coredump-detector/pkg/apis/coredump/v1alpha1.CoredumpEndpointDump"),
+										Ref: ref("github.com/fenggw-fnst/coredump-detector/pkg/apis/coredump/v1alpha1.CoredumpEndpointDump"),
 									},
 								},
 							},
@@ -815,7 +815,7 @@ func schema_pkg_apis_coredump_v1alpha1_CoredumpEndpointDumpList(ref common.Refer
 			},
 		},
 		Dependencies: []string{
-			"github.com/WanLinghao/coredump-detector/pkg/apis/coredump/v1alpha1.CoredumpEndpointDump", "k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta"},
+			"github.com/fenggw-fnst/coredump-detector/pkg/apis/coredump/v1alpha1.CoredumpEndpointDump", "k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta"},
 	}
 }
 
@@ -850,7 +850,7 @@ func schema_pkg_apis_coredump_v1alpha1_CoredumpEndpointList(ref common.Reference
 							Items: &spec.SchemaOrArray{
 								Schema: &spec.Schema{
 									SchemaProps: spec.SchemaProps{
-										Ref: ref("github.com/WanLinghao/coredump-detector/pkg/apis/coredump/v1alpha1.CoredumpEndpoint"),
+										Ref: ref("github.com/fenggw-fnst/coredump-detector/pkg/apis/coredump/v1alpha1.CoredumpEndpoint"),
 									},
 								},
 							},
@@ -861,7 +861,7 @@ func schema_pkg_apis_coredump_v1alpha1_CoredumpEndpointList(ref common.Reference
 			},
 		},
 		Dependencies: []string{
-			"github.com/WanLinghao/coredump-detector/pkg/apis/coredump/v1alpha1.CoredumpEndpoint", "k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta"},
+			"github.com/fenggw-fnst/coredump-detector/pkg/apis/coredump/v1alpha1.CoredumpEndpoint", "k8s.io/apimachinery/pkg/apis/meta/v1.ListMeta"},
 	}
 }
 

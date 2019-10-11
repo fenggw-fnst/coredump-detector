@@ -22,7 +22,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/WanLinghao/coredump-detector/pkg/k8sclient"
+	"github.com/fenggw-fnst/coredump-detector/pkg/k8sclient"
 	"k8s.io/apimachinery/pkg/apis/meta/internalversion"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"

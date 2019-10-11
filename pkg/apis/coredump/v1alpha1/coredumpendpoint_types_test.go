@@ -22,8 +22,8 @@ import (
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	. "github.com/WanLinghao/coredump-detector/pkg/apis/coredump/v1alpha1"
-	. "github.com/WanLinghao/coredump-detector/pkg/client/clientset_generated/clientset/typed/coredump/v1alpha1"
+	. "github.com/fenggw-fnst/coredump-detector/pkg/apis/coredump/v1alpha1"
+	. "github.com/fenggw-fnst/coredump-detector/pkg/client/clientset_generated/clientset/typed/coredump/v1alpha1"
 )
 
 var _ = Describe("CoredumpEndpoint", func() {

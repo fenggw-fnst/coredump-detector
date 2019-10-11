@@ -61,7 +61,7 @@ If everyting works as expected, user could observe all core files in coredump-fi
 
 #### Core file generation
 
-<img src="https://github.com/WanLinghao/coredump-detector/blob/master/pictures/design_coredump.jpg" width="500">
+<img src="https://github.com/fenggw-fnst/coredump-detector/blob/master/pictures/design_coredump.jpg" width="500">
 
 The core file generation part generates core files when job inside containers crashed. In each node that supports core dump feature,
  a admin-pod will be deployed by DaemonSet to handle this job. Each admin-pod inject an executable file  called handler into node,
@@ -69,7 +69,7 @@ The core file generation part generates core files when job inside containers cr
 
 #### Downloding core files
 
-<img src="https://github.com/WanLinghao/coredump-detector/blob/master/pictures/design_user.jpg" width="500">
+<img src="https://github.com/fenggw-fnst/coredump-detector/blob/master/pictures/design_user.jpg" width="500">
 
 An aggregation api layer will register a self-defined API called `coredump.fujitsu.com`. This api is a bridge between backend storage
  and users. User could download core files by this api. Admin can control users' access to core files by native way like RBAC, ABAC.

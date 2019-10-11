@@ -21,8 +21,8 @@ package v1alpha1
 import (
 	"time"
 
-	v1alpha1 "github.com/WanLinghao/coredump-detector/pkg/apis/coredump/v1alpha1"
-	scheme "github.com/WanLinghao/coredump-detector/pkg/client/clientset_generated/clientset/scheme"
+	v1alpha1 "github.com/fenggw-fnst/coredump-detector/pkg/apis/coredump/v1alpha1"
+	scheme "github.com/fenggw-fnst/coredump-detector/pkg/client/clientset_generated/clientset/scheme"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	types "k8s.io/apimachinery/pkg/types"
 	watch "k8s.io/apimachinery/pkg/watch"

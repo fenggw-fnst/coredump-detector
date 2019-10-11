@@ -17,12 +17,12 @@ limitations under the License.
 package gc
 
 import (
-	//	"github.com/WanLinghao/coredump-detector/pkg/k8sclient"
+	//	"github.com/fenggw-fnst/coredump-detector/pkg/k8sclient"
 	//	clientset "k8s.io/client-go/kubernetes"
-	"github.com/WanLinghao/coredump-detector/pkg/backend"
-	"github.com/WanLinghao/coredump-detector/pkg/gc/gcworker"
-	"github.com/WanLinghao/coredump-detector/pkg/gc/options"
-	"github.com/WanLinghao/coredump-detector/pkg/k8sclient"
+	"github.com/fenggw-fnst/coredump-detector/pkg/backend"
+	"github.com/fenggw-fnst/coredump-detector/pkg/gc/gcworker"
+	"github.com/fenggw-fnst/coredump-detector/pkg/gc/options"
+	"github.com/fenggw-fnst/coredump-detector/pkg/k8sclient"
 )
 
 type GCWorker interface {

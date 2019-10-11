@@ -19,7 +19,7 @@ limitations under the License.
 package v1alpha1
 
 import (
-	"github.com/WanLinghao/coredump-detector/pkg/apis/coredump"
+	"github.com/fenggw-fnst/coredump-detector/pkg/apis/coredump"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"

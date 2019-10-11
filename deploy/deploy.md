@@ -71,7 +71,7 @@ The yaml file generated in last section contains following parts:
 
 Following picture shows the main flow when a user launch a request to `coredump.fujitsu.com`  api
 
-<img src="https://github.com/WanLinghao/coredump-detector/blob/master/pictures/components.png" width="500">
+<img src="https://github.com/fenggw-fnst/coredump-detector/blob/master/pictures/components.png" width="500">
 
 
 ## For Production Use
