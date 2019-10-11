@@ -15,6 +15,12 @@ metadata:
   name: coredump-gc
   namespace: __NAMESPACE__
 ---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: coredump-handler
+  namespace: __NAMESPACE__
+---
 apiVersion: apiregistration.k8s.io/v1
 kind: APIService
 metadata:
@@ -320,6 +326,28 @@ subjects:
   name: coredump-gc
   namespace: __NAMESPACE__
 ---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: coredump-event-reporter
+rules:
+- apiGroups: [""]
+  resources: ["events"]
+  verbs: ["create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: coredump-event-report
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: coredump-event-reporter
+subjects:
+- kind: ServiceAccount
+  name: coredump-handler
+  namespace: __NAMESPACE__
+---
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -334,26 +362,34 @@ spec:
       labels:
         name: kcdt
     spec:
+      serviceAccountName: coredump-handler
       containers:
       - name: kcdt-container
-        image: fenggw/kcdt
+        image: fenggw/kcdt:latest
         securityContext:
           privileged: true
         volumeMounts:
-        - mountPath: /kcdt/host
-          name: host-volume
+        - name: tz-config
+          mountPath: /etc/localtime
+        - name: host-volume
+          mountPath: /kcdt/host
           mountPropagation: Bidirectional
-        - mountPath: /kcdt/host/core
-          name: coredump-backend
+        - name: coredump-backend
+          mountPath: /kcdt/host/core
         env:
         - name: HOSTVOL
-          value: "/root"
+          value: /root
+        - name: NS_DISK_QUOTA
+          value: "1000mb"
         command: ["/kcdt/init.sh"]
         lifecycle:
           preStop:
             exec:
               command: ["/kcdt/cleanup.sh"]
       volumes:
+      - name: tz-config
+        hostPath:
+          path: /usr/share/zoneinfo/Asia/Shanghai
       - name: host-volume
         hostPath:
           path: /root
