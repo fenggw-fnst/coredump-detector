@@ -1,4 +1,4 @@
 
 version: "1"
 domain: fujitsu.com
-repo: github.com/fenggw-fnst/fujitsu-coredump
+repo: github.com/fenggw-fnst/coredump-detector
