@@ -104,7 +104,8 @@ type CoredumpEndpointDump struct {
 }
 
 type CoredumpEndpointSpec struct {
-	PodUID types.UID
+	PodUID  types.UID
+	PodName string
 }
 
 type CoredumpEndpointStatus struct {

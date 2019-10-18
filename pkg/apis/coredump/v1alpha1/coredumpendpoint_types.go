@@ -38,7 +38,8 @@ type CoredumpEndpoint struct {
 
 // CoredumpEndpointSpec defines the desired state of CoredumpEndpoint
 type CoredumpEndpointSpec struct {
-	PodUID types.UID `json:"poduid,omitempty" protobuf:"bytes,1,opt,name=poduid"`
+	PodUID  types.UID `json:"poduid,omitempty" protobuf:"bytes,1,opt,name=poduid"`
+	PodName string    `json:"podname,omitempty" protobuf:"bytes,2,opt,name=podname"`
 }
 
 // CoredumpEndpointStatus defines the observed state of CoredumpEndpoint
