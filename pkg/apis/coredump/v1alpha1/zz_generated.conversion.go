@@ -207,6 +207,7 @@ func Convert_coredump_CoredumpEndpointList_To_v1alpha1_CoredumpEndpointList(in *
 
 func autoConvert_v1alpha1_CoredumpEndpointSpec_To_coredump_CoredumpEndpointSpec(in *CoredumpEndpointSpec, out *coredump.CoredumpEndpointSpec, s conversion.Scope) error {
 	out.PodUID = types.UID(in.PodUID)
+	out.PodName = in.PodName
 	return nil
 }
 
@@ -217,6 +218,7 @@ func Convert_v1alpha1_CoredumpEndpointSpec_To_coredump_CoredumpEndpointSpec(in *
 
 func autoConvert_coredump_CoredumpEndpointSpec_To_v1alpha1_CoredumpEndpointSpec(in *coredump.CoredumpEndpointSpec, out *CoredumpEndpointSpec, s conversion.Scope) error {
 	out.PodUID = types.UID(in.PodUID)
+	out.PodName = in.PodName
 	return nil
 }
 
