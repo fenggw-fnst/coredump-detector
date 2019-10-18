@@ -1,3 +1,5 @@
+API rule violation: names_match,github.com/fenggw-fnst/coredump-detector/pkg/apis/coredump/v1alpha1,CoredumpEndpointSpec,PodName
+API rule violation: names_match,github.com/fenggw-fnst/coredump-detector/pkg/apis/coredump/v1alpha1,CoredumpEndpointSpec,PodUID
 API rule violation: names_match,k8s.io/api/authorization/v1beta1,SubjectAccessReviewSpec,Groups
 API rule violation: names_match,k8s.io/api/core/v1,AzureDiskVolumeSource,DataDiskURI
 API rule violation: names_match,k8s.io/api/core/v1,ContainerStatus,LastTerminationState
