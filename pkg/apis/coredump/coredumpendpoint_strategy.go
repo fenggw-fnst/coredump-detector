@@ -32,25 +32,16 @@ func (c *CoredumpEndpointStrategy) Validate(ctx context.Context, obj runtime.Obj
 	log.Printf("Validating fields for CoredumpEndpoint %s/%s\n", ce.Namespace, ce.Name)
 	errors := field.ErrorList{}
 
-	pod, err := c.PodClient.Pods(ce.Namespace).Get(ce.Name, metav1.GetOptions{})
-	if err != nil {
-		fieldError := field.InternalError(field.NewPath("spec").Child("podUID"), fmt.Errorf("get pod failed: %v", err))
-		errors = append(errors, fieldError)
-		return errors
-	}
-
-	if len(ce.Spec.PodUID) != 0 {
-		if pod.UID != ce.Spec.PodUID {
-			// the pod has been deleted
-			fieldError := field.InternalError(
-				field.NewPath("spec").Child("podUID"),
-				fmt.Errorf("the pod %s/%s has been delete", ce.Namespace, ce.Name))
+	if len(ce.Spec.PodUID) == 0 {
+		pod, err := c.PodClient.Pods(ce.Namespace).Get(ce.Name, metav1.GetOptions{})
+		if err != nil {
+			fieldError := field.InternalError(field.NewPath("spec").Child("podUID"), fmt.Errorf("get pod failed: %v", err))
 			errors = append(errors, fieldError)
 			return errors
 		}
-	} else {
 		ce.Spec.PodUID = pod.UID
 	}
+
 	// perform validation here and add to errors using field.Invalid
 	return errors
 }
