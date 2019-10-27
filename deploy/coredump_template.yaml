@@ -78,6 +78,7 @@ spec:
       containers:
       - name: apiserver
         image: fenggw/coredump-detector-apiserver:latest
+        imagePullPolicy: Always
         volumeMounts:
         - name: apiserver-certs
           mountPath: /apiserver.local.config/certificates
@@ -134,6 +135,7 @@ spec:
       containers:
       - name: gc
         image: fenggw/coredump-detector-gc:latest
+        imagePullPolicy: Always
         volumeMounts:
         - name: coredump-backend
           mountPath: /coredump-backend
@@ -366,6 +368,7 @@ spec:
       containers:
       - name: kcdt-container
         image: fenggw/kcdt:latest
+        imagePullPolicy: Always
         securityContext:
           privileged: true
         volumeMounts:
