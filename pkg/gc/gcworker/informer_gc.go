@@ -22,11 +22,13 @@ import (
 	"strings"
 	"time"
 
+	"github.com/fenggw-fnst/coredump-detector/pkg/apis/coredump/v1alpha1"
 	"github.com/fenggw-fnst/coredump-detector/pkg/backend/types"
 	coredumpclientset "github.com/fenggw-fnst/coredump-detector/pkg/client/clientset_generated/clientset"
-	"k8s.io/api/core/v1"
+	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	podtypes "k8s.io/apimachinery/pkg/types"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	"k8s.io/apimachinery/pkg/util/wait"
 	kubeinformers "k8s.io/client-go/informers"
@@ -43,24 +45,26 @@ import (
 // 3. Other gc worker like period_gc worker would clean those deleted pods core files after a while
 
 type InformerGC struct {
-	workers                    int
-	backendStorage             types.Storage
-	backendCleanQueue          workqueue.RateLimitingInterface
-	coredumpEndpointCleanQueue workqueue.RateLimitingInterface
-	gcThreshold                time.Duration
-	kubeClient                 clientset.Interface
-	coredumpEndpointClient     coredumpclientset.Interface
-	kubeInformerFactory        kubeinformers.SharedInformerFactory
-	podListerSynced            cache.InformerSynced
-	nsListerSynced             cache.InformerSynced
+	workers                     int
+	backendStorage              types.Storage
+	coredumpEndpointCreateQueue workqueue.RateLimitingInterface
+	backendCleanQueue           workqueue.RateLimitingInterface
+	coredumpEndpointCleanQueue  workqueue.RateLimitingInterface
+	gcThreshold                 time.Duration
+	kubeClient                  clientset.Interface
+	coredumpEndpointClient      coredumpclientset.Interface
+	kubeInformerFactory         kubeinformers.SharedInformerFactory
+	podListerSynced             cache.InformerSynced
+	nsListerSynced              cache.InformerSynced
 }
 
 func NewInformerGC(kubeClient clientset.Interface, backendStorage types.Storage, gt time.Duration) (*InformerGC, error) {
 	ig := &InformerGC{
-		workers:                    5,
-		backendStorage:             backendStorage,
-		backendCleanQueue:          workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "backend_cleaner"),
-		coredumpEndpointCleanQueue: workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "coredumpendpoint_cleaner"),
+		workers:                     5,
+		backendStorage:              backendStorage,
+		coredumpEndpointCreateQueue: workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "coredumpendpoint_creator"),
+		backendCleanQueue:           workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "backend_cleaner"),
+		coredumpEndpointCleanQueue:  workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "coredumpendpoint_cleaner"),
 
 		gcThreshold: gt,
 		kubeClient:  kubeClient,
@@ -85,6 +89,8 @@ func NewInformerGC(kubeClient clientset.Interface, backendStorage types.Storage,
 		DeleteFunc: ig.namespaceDeleted,
 	})
 	podInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
+		AddFunc:    ig.podAdded,
+		UpdateFunc: ig.podUpdated,
 		DeleteFunc: ig.podDeleted,
 	})
 	ig.kubeInformerFactory = kubeInformerFactory
@@ -93,6 +99,7 @@ func NewInformerGC(kubeClient clientset.Interface, backendStorage types.Storage,
 
 func (ig *InformerGC) Run(stopCh <-chan struct{}) {
 	defer utilruntime.HandleCrash()
+	defer ig.coredumpEndpointCreateQueue.ShutDown()
 	defer ig.backendCleanQueue.ShutDown()
 	defer ig.coredumpEndpointCleanQueue.ShutDown()
 
@@ -107,6 +114,7 @@ func (ig *InformerGC) Run(stopCh <-chan struct{}) {
 	for i := 0; i < ig.workers; i++ {
 		go wait.Until(ig.runBackendWorker, time.Second, stopCh)
 		go wait.Until(ig.runCoredumpEndpointWorker, time.Second, stopCh)
+		go wait.Until(ig.runCoredumpEndpointWorker2, time.Second, stopCh)
 	}
 
 	<-stopCh
@@ -119,6 +127,11 @@ func (ig *InformerGC) runBackendWorker() {
 
 func (ig *InformerGC) runCoredumpEndpointWorker() {
 	for ig.processCoredumpEndpointItem() {
+	}
+}
+
+func (ig *InformerGC) runCoredumpEndpointWorker2() {
+	for ig.processCoredumpEndpointItem2() {
 	}
 }
 
@@ -153,6 +166,23 @@ func (ig *InformerGC) processCoredumpEndpointItem() bool {
 	}
 
 	ig.coredumpEndpointCleanQueue.Forget(key)
+	return true
+}
+
+func (ig *InformerGC) processCoredumpEndpointItem2() bool {
+	key, quit := ig.coredumpEndpointCreateQueue.Get()
+	if quit {
+		return false
+	}
+	defer ig.coredumpEndpointCreateQueue.Done(key)
+
+	if err := ig.syncCoredumpEndpoint2(key.(string)); err != nil {
+		utilruntime.HandleError(fmt.Errorf("syncing %q failed: %v", key, err))
+		ig.coredumpEndpointCreateQueue.AddRateLimited(key)
+		return true
+	}
+
+	ig.coredumpEndpointCreateQueue.Forget(key)
 	return true
 }
 
@@ -223,6 +253,39 @@ func (ig *InformerGC) syncCoredumpEndpoint(key string) error {
 	return nil
 }
 
+func (ig *InformerGC) syncCoredumpEndpoint2(key string) error {
+	currentTime := time.Now()
+	defer func() {
+		klog.Infof("Finished aggregation api layer syncing for key %s (%v)", key, time.Since(currentTime))
+	}()
+
+	ns, cdeName, podUID, err := ig.splitKey(key)
+	if err != nil {
+		return err
+	}
+
+	if ns == "" || cdeName == "" || podUID == "" {
+		return fmt.Errorf("unexpected key in syncCoredumpEndpoint2: %s", key)
+	}
+
+	// create coredumpendpoint
+	_, err = ig.coredumpEndpointClient.CoredumpV1alpha1().CoredumpEndpoints(ns).Create(&v1alpha1.CoredumpEndpoint{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      cdeName,
+			Namespace: ns,
+		},
+		Spec: v1alpha1.CoredumpEndpointSpec{
+			PodUID:  podtypes.UID(podUID),
+			PodName: cdeName,
+		},
+	})
+	if err != nil {
+		return fmt.Errorf("failed to create coredumpendpoint %s with pod uid %s in namespace %s: %v", cdeName, podUID, ns, err)
+	}
+
+	return nil
+}
+
 func (ig *InformerGC) namespaceDeleted(obj interface{}) {
 	ns := obj.(*v1.Namespace)
 	if ns.DeletionTimestamp == nil {
@@ -231,6 +294,32 @@ func (ig *InformerGC) namespaceDeleted(obj interface{}) {
 	}
 
 	ig.backendCleanQueue.Add(ig.generateKey(ns.Name, "", ""))
+}
+
+func (ig *InformerGC) podAdded(obj interface{}) {
+	pod := obj.(*v1.Pod)
+	if pod.DeletionTimestamp != nil {
+		// double check
+		return
+	}
+
+	if ig.isCoredumpEndpointAutoCreationLabeled(pod.GetLabels()) {
+		klog.Infof("Detect pod creation(%s/%s) with label \"coredumpendpoint\" : \"auto\", create coredumpendpoint", pod.Namespace, pod.Name)
+		ig.coredumpEndpointCreateQueue.Add(ig.generateKey(pod.Namespace, pod.Name, string(pod.UID)))
+	}
+}
+
+func (ig *InformerGC) podUpdated(oldObj, newObj interface{}) {
+	oldPod := oldObj.(*v1.Pod)
+	newPod := newObj.(*v1.Pod)
+
+	if ig.isCoredumpEndpointAutoCreationLabeled(newPod.GetLabels()) {
+		if ig.isCoredumpEndpointAutoCreationLabeled(oldPod.GetLabels()) {
+			return
+		}
+		klog.Infof("Detect pod(%s/%s) modified with label coredumpendpoint:auto, create coredumpendpoint", newPod.Namespace, newPod.Name)
+		ig.coredumpEndpointCreateQueue.Add(ig.generateKey(newPod.Namespace, newPod.Name, string(newPod.UID)))
+	}
 }
 
 func (ig *InformerGC) podDeleted(obj interface{}) {
@@ -272,6 +361,16 @@ func (ig *InformerGC) splitKey(key string) (ns, name, podUID string, err error) 
 		return "", "", "", fmt.Errorf("unexpected key:%s", fileds)
 	}
 	return fileds[0], fileds[1], fileds[2], nil
+}
+
+func (ig *InformerGC) isCoredumpEndpointAutoCreationLabeled(label map[string]string) bool {
+	if val, ok := label["coredumpendpoint"]; ok {
+		if val == "auto" {
+			return true
+		}
+		return false
+	}
+	return false
 }
 
 // This function was copied from package k8s.io/kubernetes/pkg/controller
