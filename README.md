@@ -30,7 +30,7 @@ For test purpose, you can also use local host[https://kubernetes.io/docs/concept
 
 To control core files generation behavior, a DaemonSet is necessary which would launch each node an admin-pod. Those pods make sure everything will go as we expected when job crashed in other work pods. Each pod will execute following steps:
 
-a. Copy a exectuable file called hanlder to host, it be invoked when any process crashed in that host. It will distinguish if the crashed job was from a pod. If so, it collects realted information and store core file to backend storage.
+a. Copy a exectuable file called "kcdt" to host, it is a coredump handler and will be invoked when any process crashed in that host. It will distinguish if the crashed job was from a pod. If so, it collects related information and stores the core files to backend storage.
 
 b. Modify && maintain `core_pattern` settings on each node which usually exist as a file located in `/proc/sys/kernel/core_pattern`. This setting is for control the behavior when process crashed. In our case, the admin-pod will modify it so the handler will be invoked.
 
