@@ -77,7 +77,7 @@ spec:
       serviceAccountName: coredump-api
       containers:
       - name: apiserver
-        image: fenggw/coredump-detector-apiserver:latest
+        image: fenggw/fujitsu-coredump:v1.0-alpha
         imagePullPolicy: Always
         volumeMounts:
         - name: apiserver-certs
@@ -134,7 +134,7 @@ spec:
       serviceAccountName: coredump-gc
       containers:
       - name: gc
-        image: fenggw/coredump-detector-gc:latest
+        image: fenggw/fujitsu-coredump-gc:v1.0-alpha
         imagePullPolicy: Always
         volumeMounts:
         - name: coredump-backend
