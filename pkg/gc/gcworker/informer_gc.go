@@ -246,7 +246,7 @@ func (ig *InformerGC) syncCoredumpEndpoint(key string) error {
 			return fmt.Errorf("failed to delete coredumpendpoint %s with pod uid %s in namespace %s: %v", cdeName, podUID, ns, err)
 		}
 	} else {
-		klog.Infof("Give up cleaning coredumpendpint %s in namespace %s since the bound pod uid has changed from %s to %s",
+		klog.Infof("Give up cleaning coredumpendpoint %s in namespace %s since the bound pod uid has changed from %s to %s",
 			cdeName, ns, podUID, currentCde.Spec.PodUID)
 	}
 
@@ -311,7 +311,7 @@ func (ig *InformerGC) podAdded(obj interface{}) {
 	}
 
 	if ig.isCoredumpEndpointAutoCreationLabeled(pod.GetLabels()) {
-		klog.Infof("Detect pod creation(%s/%s) with label \"coredumpendpoint\" : \"auto\", create coredumpendpoint", pod.Namespace, pod.Name)
+		klog.Infof("Detect pod creation(%s/%s) with label coredumpendpoint:auto, create coredumpendpoint", pod.Namespace, pod.Name)
 		ig.coredumpEndpointCreateQueue.Add(ig.generateKey(pod.Namespace, pod.Name, string(pod.UID)))
 	}
 }
