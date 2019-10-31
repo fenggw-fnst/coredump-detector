@@ -268,7 +268,14 @@ func (ig *InformerGC) syncCoredumpEndpoint2(key string) error {
 		return fmt.Errorf("unexpected key in syncCoredumpEndpoint2: %s", key)
 	}
 
-	// create coredumpendpoint
+	_, err = ig.coredumpEndpointClient.CoredumpV1alpha1().CoredumpEndpoints(ns).Get(cdeName, metav1.GetOptions{})
+	if err == nil {
+		klog.Infof("Failed to create coredumpendpoint since %s/%s already exists", ns, cdeName)
+		return nil
+	} else if err != nil && !errors.IsNotFound(err) {
+		klog.Warningf("Failed to check if coredumpendpoint %s/%s exists before creation: %v", ns, cdeName, err)
+	}
+
 	_, err = ig.coredumpEndpointClient.CoredumpV1alpha1().CoredumpEndpoints(ns).Create(&v1alpha1.CoredumpEndpoint{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      cdeName,
