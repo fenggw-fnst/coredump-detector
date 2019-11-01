@@ -78,7 +78,6 @@ spec:
       containers:
       - name: apiserver
         image: fenggw/fujitsu-coredump:v1.0-alpha
-        imagePullPolicy: Always
         volumeMounts:
         - name: apiserver-certs
           mountPath: /apiserver.local.config/certificates
@@ -135,7 +134,6 @@ spec:
       containers:
       - name: gc
         image: fenggw/fujitsu-coredump-gc:v1.0-alpha
-        imagePullPolicy: Always
         volumeMounts:
         - name: coredump-backend
           mountPath: /coredump-backend
@@ -182,7 +180,6 @@ spec:
       containers:
       - name: etcd
         image: quay.io/coreos/etcd:latest
-        imagePullPolicy: Always
         resources:
           requests:
             cpu: 200m
@@ -310,7 +307,7 @@ metadata:
 rules:
 - apiGroups: ["coredump.fujitsu.com"]
   resources: ["coredumpendpoints"]
-  verbs: ["get", "delete"]
+  verbs: ["get", "delete", "create"]
 - apiGroups: [""] # "" indicates the core API group
   resources: ["namespaces", "pods"]
   verbs: ["list", "watch", "get"]
@@ -367,8 +364,7 @@ spec:
       serviceAccountName: coredump-handler
       containers:
       - name: kcdt-container
-        image: fenggw/kcdt:latest
-        imagePullPolicy: Always
+        image: fenggw/kcdt:v1.0
         securityContext:
           privileged: true
         volumeMounts:
