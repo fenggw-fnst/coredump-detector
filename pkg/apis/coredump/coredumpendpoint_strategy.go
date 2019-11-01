@@ -33,7 +33,10 @@ func (c *CoredumpEndpointStrategy) Validate(ctx context.Context, obj runtime.Obj
 	errors := field.ErrorList{}
 
 	if len(ce.Spec.PodUID) == 0 {
-		pod, err := c.PodClient.Pods(ce.Namespace).Get(ce.Name, metav1.GetOptions{})
+		if len(ce.Spec.PodName) == 0 {
+			ce.Spec.PodName = ce.Name
+		}
+		pod, err := c.PodClient.Pods(ce.Namespace).Get(ce.Spec.PodName, metav1.GetOptions{})
 		if err != nil {
 			fieldError := field.InternalError(field.NewPath("spec").Child("podUID"), fmt.Errorf("get pod failed: %v", err))
 			errors = append(errors, fieldError)

@@ -17,6 +17,7 @@ limitations under the License.
 package gcworker
 
 import (
+	"crypto/sha1"
 	"fmt"
 	"os"
 	"strings"
@@ -218,14 +219,16 @@ func (ig *InformerGC) syncCoredumpEndpoint(key string) error {
 		klog.Infof("Finished aggregation api layer syncing for key %s (%v)", key, time.Since(currentTime))
 	}()
 
-	ns, cdeName, podUID, err := ig.splitKey(key)
+	ns, podName, podUID, err := ig.splitKey(key)
 	if err != nil {
 		return err
 	}
 
-	if ns == "" || cdeName == "" || podUID == "" {
+	if ns == "" || podName == "" || podUID == "" {
 		return fmt.Errorf("unexpected key in syncCoredumpEndpoint: %s", key)
 	}
+
+	cdeName := podName + "-" + fmt.Sprintf("%x", sha1.Sum([]byte(podUID)))[:8]
 
 	// Clean coredumpendpoint
 	currentCde, err := ig.coredumpEndpointClient.CoredumpV1alpha1().CoredumpEndpoints(ns).Get(cdeName, metav1.GetOptions{})
@@ -259,14 +262,16 @@ func (ig *InformerGC) syncCoredumpEndpoint2(key string) error {
 		klog.Infof("Finished aggregation api layer syncing for key %s (%v)", key, time.Since(currentTime))
 	}()
 
-	ns, cdeName, podUID, err := ig.splitKey(key)
+	ns, podName, podUID, err := ig.splitKey(key)
 	if err != nil {
 		return err
 	}
 
-	if ns == "" || cdeName == "" || podUID == "" {
+	if ns == "" || podName == "" || podUID == "" {
 		return fmt.Errorf("unexpected key in syncCoredumpEndpoint2: %s", key)
 	}
+
+	cdeName := podName + "-" + fmt.Sprintf("%x", sha1.Sum([]byte(podUID)))[:8]
 
 	_, err = ig.coredumpEndpointClient.CoredumpV1alpha1().CoredumpEndpoints(ns).Get(cdeName, metav1.GetOptions{})
 	if err == nil {
@@ -283,7 +288,7 @@ func (ig *InformerGC) syncCoredumpEndpoint2(key string) error {
 		},
 		Spec: v1alpha1.CoredumpEndpointSpec{
 			PodUID:  podtypes.UID(podUID),
-			PodName: cdeName,
+			PodName: podName,
 		},
 	})
 	if err != nil {
