@@ -2,6 +2,7 @@ apiVersion: coredump.fujitsu.com/v1alpha1
 kind: CoredumpEndpoint
 metadata:
   namespace: __NAMESPACE__
-  name: __NAME__
+  name: __CNAME__
 spec:
-  poduid: __UID__
+  podname: __PNAME__
+  poduid: __PUID__
